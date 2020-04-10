@@ -62,7 +62,7 @@ window.addEventListener('DOMContentLoaded', function () {
             menu = document.querySelector('menu'),
             closeBtn = document.querySelector('.close-btn'),
             menuItems = menu.querySelectorAll('li');
-        
+
         const handlerMenu = () => {
             menu.classList.toggle('active-menu');
         }
@@ -71,9 +71,30 @@ window.addEventListener('DOMContentLoaded', function () {
 
         closeBtn.addEventListener('click', handlerMenu);
 
+        const scrollMenu = function (e) {
+            e.preventDefault();
+            let scrollItem = document.querySelector(this.querySelector('a').getAttribute('href'));
+            scrollItem.scrollIntoView({
+                behavior: "smooth"
+            });
+        }
+
         menuItems.forEach((item) => {
             item.addEventListener('click', handlerMenu);
+            item.addEventListener('click', scrollMenu)
         });
+
+        const mainLink = document.querySelector('.main-link'),
+            mainLinkBlock = document.querySelector(mainLink.getAttribute('href'));
+
+        mainLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            mainLinkBlock.scrollIntoView({
+                behavior: "smooth"
+            })
+        });
+
+
     };
 
     toogleMenu();
