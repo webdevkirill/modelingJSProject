@@ -78,4 +78,46 @@ window.addEventListener('DOMContentLoaded', function () {
 
     toogleMenu();
 
+    //popup
+
+    const tooglePopup = () => {
+        const popup = document.querySelector('.popup'),
+            popupBtns = document.querySelectorAll('.popup-btn'),
+            popupClose = document.querySelector('.popup-close'),
+            popupContent = popup.querySelector('.popup-content');
+
+        let showPopup = () => {
+            if (!popup.style.display || popup.style.display === 'none'){
+                popup.style.display = 'block';
+                popupContent.style.top = '10%';
+                document.body.style.overflow = 'hidden';
+                if (document.documentElement.clientWidth > 768) {
+                    popupContent.style.top = '-500px';
+                    let animate = () => {
+                        let animation = requestAnimationFrame(animate);
+                        popupContent.style.top = (parseInt(popupContent.style.top) + 15) + 'px';
+
+                        if (parseInt(popupContent.style.top) > 99) {
+                            cancelAnimationFrame(animation);
+                        }
+                    };
+                    animate();
+                }
+            } else {
+                popup.style.display = 'none';
+                popupContent.style.top = '10%';
+                document.body.style.overflow = '';
+            }
+            
+        }
+
+        popupBtns.forEach((item) => {
+            item.addEventListener('click', showPopup);
+        });
+
+        popupClose.addEventListener('click', showPopup);
+    };
+
+    tooglePopup();
+
 });
