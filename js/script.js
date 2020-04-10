@@ -1,7 +1,9 @@
 window.addEventListener('DOMContentLoaded', function () {
     'use strict';
 
-    const countTimer = function (deadline) {
+    //Timer
+
+    const countTimer =  (deadline) => {
         const timerHours = document.querySelector('#timer-hours'),
             timerMinutes = document.querySelector('#timer-minutes'),
             timerSeconds = document.querySelector('#timer-seconds');
@@ -17,7 +19,7 @@ window.addEventListener('DOMContentLoaded', function () {
         const getTimeRemaining = function() {
             const dateNow = new Date().getTime();
             let dateStop;
-                  
+            
             if (deadline) {
                 dateStop = new Date(deadline).getTime();
             } else {
@@ -25,9 +27,9 @@ window.addEventListener('DOMContentLoaded', function () {
             }
 
             const timeRemaining = (dateStop - dateNow) / 1000,
-                  seconds = addZeroes(Math.floor(timeRemaining % 60)),
-                  minutes = addZeroes(Math.floor((timeRemaining / 60) % 60)),
-                  hours = addZeroes(Math.floor(timeRemaining / 3600));
+                seconds = addZeroes(Math.floor(timeRemaining % 60)),
+                minutes = addZeroes(Math.floor((timeRemaining / 60) % 60)),
+                hours = addZeroes(Math.floor(timeRemaining / 3600));
 
             return {timeRemaining, hours, minutes, seconds};
         }
@@ -52,5 +54,28 @@ window.addEventListener('DOMContentLoaded', function () {
     };
 
     countTimer();
+
+    //Menu
+
+    const toogleMenu = () => {
+        const btnMenu = document.querySelector('.menu'),
+            menu = document.querySelector('menu'),
+            closeBtn = document.querySelector('.close-btn'),
+            menuItems = menu.querySelectorAll('li');
+        
+        const handlerMenu = () => {
+            menu.classList.toggle('active-menu');
+        }
+
+        btnMenu.addEventListener('click', handlerMenu);
+
+        closeBtn.addEventListener('click', handlerMenu);
+
+        menuItems.forEach((item) => {
+            item.addEventListener('click', handlerMenu);
+        });
+    };
+
+    toogleMenu();
 
 });
