@@ -62,18 +62,44 @@ window.addEventListener('DOMContentLoaded', function () {
             menu = document.querySelector('menu'),
             closeBtn = document.querySelector('.close-btn'),
             menuItems = menu.querySelectorAll('li');
-        
+
         const handlerMenu = () => {
             menu.classList.toggle('active-menu');
-        }
+        };
+
+        const scrollMenu = function (e) {
+            e.preventDefault();
+            let scrollItem = document.querySelector(e.target.getAttribute('href'));
+            scrollItem.scrollIntoView({
+                behavior: "smooth"
+            });
+        };
+
+        let isMenuActive = false;
+
+        menu.addEventListener('click', (event) => {
+            let target = event.target;
+            if (target === closeBtn) {
+                handlerMenu();
+            } else if (target.tagName === 'A') {
+                handlerMenu();
+                scrollMenu(event);
+            }
+        });
 
         btnMenu.addEventListener('click', handlerMenu);
 
-        closeBtn.addEventListener('click', handlerMenu);
+        const mainLink = document.querySelector('.main-link'),
+            mainLinkBlock = document.querySelector(mainLink.getAttribute('href'));
 
-        menuItems.forEach((item) => {
-            item.addEventListener('click', handlerMenu);
+        mainLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            mainLinkBlock.scrollIntoView({
+                behavior: "smooth"
+            })
         });
+
+
     };
 
     toogleMenu();
