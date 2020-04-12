@@ -136,7 +136,18 @@ window.addEventListener('DOMContentLoaded', function () {
             item.addEventListener('click', showPopup);
         });
 
-        popupClose.addEventListener('click', showPopup);
+        popup.addEventListener('click', (event) => {
+            let target = event.target;
+
+            if (target === popupClose) {
+                showPopup();
+            } else {
+                target = event.target.closest('.popup-content');
+                if (!target) {
+                    showPopup();
+                }
+            }
+        });
     };
 
     tooglePopup();
