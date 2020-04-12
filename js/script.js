@@ -152,4 +152,44 @@ window.addEventListener('DOMContentLoaded', function () {
 
     tooglePopup();
 
+    //tabs
+
+
+    const tabs = () => {
+        const tabHeader = document.querySelector('.service-header'),
+            tab = tabHeader.querySelectorAll('.service-header-tab'),
+            tabContent = document.querySelectorAll('.service-tab');
+
+        const toogleTabConntent = (index) => {
+            for (let i = 0; i < tab.length; i++) {
+                if (index === i) {
+                    tabContent[i].classList.remove('d-none');
+                    tab[i].classList.add('active');
+                } else {
+                    tabContent[i].classList.add('d-none');
+                    tab[i].classList.remove('active');
+                }
+            };
+        };
+
+        console.log(tab);
+
+        tabHeader.addEventListener('click', (event) => {
+            let target = event.target.closest('.service-header-tab');
+
+            console.log(target);
+
+            if (target) {
+                tab.forEach((item, i) => {
+                    if (item === target) {
+                        toogleTabConntent(i);
+                    }
+                });
+            }
+
+        });
+    };
+
+    tabs();
+    
 });
