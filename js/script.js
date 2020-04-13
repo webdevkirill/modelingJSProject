@@ -191,5 +191,110 @@ window.addEventListener('DOMContentLoaded', function () {
     };
 
     tabs();
+
+    //slider
+
+    const slider = (time = 3000) => {
+        const slide = document.querySelectorAll('.portfolio-item'),
+            slider = document.querySelector('.portfolio-content'),
+            dotsWrapper = document.querySelector('.portfolio-dots');
+
+        const addDots = () => {
+            for (let i = 0; i < slide.length; i++) {
+                let dot = document.createElement('li');
+                dot.classList.add('dot');
+                if (i === 0) {
+                    dot.classList.add('dot-active');
+                }
+                dotsWrapper.append(dot);
+            }
+        }
+
+        addDots();
+        const dots = document.querySelectorAll('.dot');
+
+        let currentSlide = 0,
+            interval;
+
+        const prevSlide = (elem, index, className) => {
+            elem[index].classList.remove(className);
+        };
+
+        const nextSlide = (elem, index, className) => {
+            elem[index].classList.add(className);
+        };
+
+        const isHasSlide = (elem) => {
+            if (elem >= slide.length) {
+                return 0;
+            } else if (elem < 0) {
+                return slide.length - 1;
+            } else {
+                return elem
+            }
+        }
+
+        const autoPlaySlider = () => { 
+            prevSlide(slide, currentSlide, 'portfolio-item-active');
+            prevSlide(dots, currentSlide, 'dot-active');
+            currentSlide = isHasSlide(++currentSlide);
+            nextSlide(slide, currentSlide, 'portfolio-item-active');
+            nextSlide(dots, currentSlide, 'dot-active');
+        };
+
+        const startSlider = () => {
+            interval = setInterval(autoPlaySlider, time);
+        };
+
+        startSlider();
+
+        const stopSlider = () => {
+            clearInterval(interval);
+        };
+
+        slider.addEventListener('click', (event) => {
+            event.preventDefault();
+
+            let target = event.target;
+
+            if (!target.matches('.dot, .portfolio-btn')) {
+                returnl
+            }
+
+            prevSlide(slide, currentSlide, 'portfolio-item-active');
+            prevSlide(dots, currentSlide, 'dot-active');
+
+            if (target.matches('#arrow-right')) {
+                currentSlide = isHasSlide(++currentSlide);
+            } else if (target.matches('#arrow-left')) {
+                currentSlide = isHasSlide(--currentSlide);
+            } else if (target.matches('.dot')) {
+                dots.forEach((elem, index) => {
+                    if (elem === target) {
+                        currentSlide = index;
+                    }
+                })
+            }
+
+            nextSlide(slide, currentSlide, 'portfolio-item-active');
+            nextSlide(dots, currentSlide, 'dot-active');
+
+        });
+
+        slider.addEventListener('mouseover', (event) => {
+            if (event.target.matches('.dot, .portfolio-btn')) {
+                stopSlider();
+            }
+        });
+
+        slider.addEventListener('mouseout', (event) => {
+            if (event.target.matches('.dot, .portfolio-btn')) {
+                startSlider();
+            }
+        });
+
+    }
+
+    slider(3000);
     
 });
