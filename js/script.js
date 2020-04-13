@@ -319,5 +319,17 @@ window.addEventListener('DOMContentLoaded', function () {
     };
 
     team();
+
+    //calc
+
+    const calc = () => {
+        const calcItems = document.querySelectorAll('.calc-item');
+
+        calcItems.forEach((item) => {
+            item.addEventListener('input', () => {
+                item.value = item.value.replace(/\D/);
+            });
+        });
+    };
     
 });
