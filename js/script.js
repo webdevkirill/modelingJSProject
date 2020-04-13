@@ -172,12 +172,8 @@ window.addEventListener('DOMContentLoaded', function () {
             };
         };
 
-        console.log(tab);
-
         tabHeader.addEventListener('click', (event) => {
             let target = event.target.closest('.service-header-tab');
-
-            console.log(target);
 
             if (target) {
                 tab.forEach((item, i) => {
@@ -293,7 +289,7 @@ window.addEventListener('DOMContentLoaded', function () {
             }
         });
 
-    }
+    };
 
     slider(3000);
 
