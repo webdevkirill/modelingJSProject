@@ -296,5 +296,28 @@ window.addEventListener('DOMContentLoaded', function () {
     }
 
     slider(3000);
+
+    //team
+
+    const team = () => {
+        const commandPhoto = document.querySelectorAll('.command__photo');
+
+        const changeSrc = (elem) => {
+            const dataSrc = elem.dataset.img;
+            elem.dataset.img = elem.getAttribute('src');
+            elem.setAttribute('src', dataSrc);
+        }
+
+        commandPhoto.forEach((item) => {
+            item.addEventListener('mouseover', (event) => {
+                changeSrc(item);
+            });
+            item.addEventListener('mouseout', (event) => {
+                changeSrc(item);
+            });
+        });
+    };
+
+    team();
     
 });
