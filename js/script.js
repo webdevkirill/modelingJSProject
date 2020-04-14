@@ -318,7 +318,90 @@ window.addEventListener('DOMContentLoaded', function () {
 
     //calc
 
-    const calc = (price = 100) => {
+    const aminateNumbers = (elem, value, time) => {
+
+        if (+elem.textContent === +value) {
+            return
+        }
+
+        const diff = ((+value - +elem.textContent) + '').split('');
+        let sign;
+        
+        if (diff[0] === '-') {
+            sign = '-';
+            diff.splice(0, 1);
+        } else {
+            sign = '+';
+        } 
+
+
+        let res = elem.textContent.split('');
+        diff.forEach(() => {
+            if (res.length < diff.length) {
+                res.unshift('0');
+            } 
+            
+        });
+
+        console.log(diff, res);
+
+        let count = 0;
+
+        const aminationRec = () => {
+            if (sign === '+') {
+                diff.forEach((item, i) => {
+                    
+                        if (item === '0' && count === 0) {
+                            res[i + res.length - diff.length] = (+res[i + res.length - diff.length] + 1) + '';
+                            diff[i] = '9';
+                        } else if (item !== '0') {
+                            const repChar = (+res[i + res.length - diff.length] + 1) + '';
+                            
+                            res[i + res.length - diff.length] = repChar === '10' ? '0' : repChar;
+                            diff[i] = (+diff[i] - 1) + '';;
+                        }
+                    
+                    
+                });
+
+                elem.textContent = res.join('');
+                
+
+                count++;
+                if (count === 10) {
+                    clearInterval(animationInterval);
+                }
+            } else if (sign === '-') {
+                diff.forEach((item, i) => {
+                    if (item === '0' && count === 0) {
+                        res[i] = Math.abs((+res[i] - 1) + '');
+                        diff[i] = '1';
+                    } else if (item !== '0') {
+                        const repChar = Math.abs((+res[i] - 1) + '');
+
+                        res[i] = repChar === '10' ? '0' : repChar;
+                        diff[i] = (+diff[i] + 1) + '';
+                    }
+                });
+
+                elem.textContent = res.join('');
+
+
+                count++;
+                if (count === 10) {
+                    clearInterval(animationInterval);
+                }
+            }
+        }
+
+        let animationInterval = setInterval(aminationRec, time / 10);
+
+
+
+
+    };
+
+    const calc = (time, price = 1000) => {
         const calcBlock = document.querySelector('.calc-block'),
             calcItems = calcBlock.querySelectorAll('input.calc-item'),
             calcType = calcBlock.querySelector('.calc-type'),
@@ -355,7 +438,7 @@ window.addEventListener('DOMContentLoaded', function () {
                 total = price * typeValue * squareValue * countVAlue * dayValue;
             }
 
-            totalValue.textContent = total;
+            aminateNumbers(totalValue, total, time);
         };
 
         calcBlock.addEventListener('change', (event) => {
@@ -367,6 +450,7 @@ window.addEventListener('DOMContentLoaded', function () {
         });
     };
 
-    calc();
+    calc(1000);
+
     
 });
