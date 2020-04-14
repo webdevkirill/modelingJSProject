@@ -452,5 +452,54 @@ window.addEventListener('DOMContentLoaded', function () {
 
     calc(1000);
 
+    //send ajax form
+
+    const sendForm = () => {
+
+        const errorMessage = 'Что-то пошло не так...',
+            loadMessage = 'Загрузка...',
+            successMessage = 'Спасибо! Мы скоро с вами свяжемся',
+            statusMessage = document.createElement('div');
+        
+        statusMessage.style.cssText = `font-size: 2rem;`
+
+        const form = document.getElementById('form1');
+        form.append(statusMessage);
+
+        form.addEventListener('submit', (event) => {
+            event.preventDefault();
+
+            const request = new XMLHttpRequest();
+
+            request.addEventListener('readystatechange', () => {
+                statusMessage.textContent = loadMessage;
+                if (request.readyState !== 4) {
+                    return;
+                } else if (request.status === 200) {
+                    statusMessage.textContent = successMessage;
+                } else {
+                    statusMessage.textContent = errorMessage;
+                }
+            });
+
+            request.open('POST', './send.php');
+            request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            const formData = new FormData(form);
+            let body = {};
+            for (let value of formData.entries()) {
+                body[value[0]] = value[1];
+            }
+            
+            request.send('data=' + JSON.stringify(body));
+
+            
+
+        });
+        
+
+
+    };
+
+    sendForm();
     
 });
