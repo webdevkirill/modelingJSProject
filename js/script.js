@@ -466,33 +466,41 @@ window.addEventListener('DOMContentLoaded', function () {
         const form = document.getElementById('form1');
         form.append(statusMessage);
 
-        form.addEventListener('submit', (event) => {
-            event.preventDefault();
+        const formData = new FormData(form);
+        let body = {};
+        for (let value of formData.entries()) {
+            body[value[0]] = value[1];
+        }
 
+        const postData = (body, loadData, successData, errorData) => {
             const request = new XMLHttpRequest();
 
             request.addEventListener('readystatechange', () => {
-                statusMessage.textContent = loadMessage;
+                loadData();
                 if (request.readyState !== 4) {
                     return;
                 } else if (request.status === 200) {
-                    statusMessage.textContent = successMessage;
+                    successData();
                 } else {
-                    statusMessage.textContent = errorMessage;
+                    errorData(request.status);
                 }
             });
 
             request.open('POST', './send.php');
             request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-            const formData = new FormData(form);
-            let body = {};
-            for (let value of formData.entries()) {
-                body[value[0]] = value[1];
-            }
-            
             request.send('data=' + JSON.stringify(body));
+        }
 
-            
+        form.addEventListener('submit', (event) => {
+            event.preventDefault();
+            postData(body,() => {
+                statusMessage.textContent = loadMessage;
+            }, () => {
+                statusMessage.textContent = successMessage;
+            }, (error) => {
+                console.error(error);
+                statusMessage.textContent = errorMessage;
+            })
 
         });
         
