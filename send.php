@@ -4,9 +4,10 @@
 
     $name = $data->user_name; // input name
     $email = $data->user_email;
-    $phone = $data->user_phone; // input phone
+    $phone = $data->user_phone;
+    $message = $data->user_message; // input phone
     
-    $message = "Новый заказ на сайте.".PHP_EOL."Имя: ".$name.PHP_EOL."Телефон: ".$phone.PHP_EOL."email: ".$email;
+    $message = "Новый заказ на сайте.".PHP_EOL."Имя: ".$name.PHP_EOL."Телефон: ".$phone.PHP_EOL."email: ".$email.PHP_EOL."Сообщение: ".$message;
 
 	send(190307755, $message); // id беседы с заказчиком
 

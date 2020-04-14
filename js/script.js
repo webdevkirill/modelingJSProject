@@ -3,12 +3,12 @@ window.addEventListener('DOMContentLoaded', function () {
 
     //Timer
 
-    const countTimer =  (deadline) => {
+    const countTimer = (deadline) => {
         const timerHours = document.querySelector('#timer-hours'),
             timerMinutes = document.querySelector('#timer-minutes'),
             timerSeconds = document.querySelector('#timer-seconds');
 
-        const addZeroes = function(item) {
+        const addZeroes = function (item) {
             if (item > 9) {
                 return item
             } else {
@@ -16,10 +16,10 @@ window.addEventListener('DOMContentLoaded', function () {
             }
         };
 
-        const getTimeRemaining = function() {
+        const getTimeRemaining = function () {
             const dateNow = new Date().getTime();
             let dateStop;
-            
+
             if (deadline) {
                 dateStop = new Date(deadline).getTime();
             } else {
@@ -31,10 +31,15 @@ window.addEventListener('DOMContentLoaded', function () {
                 minutes = addZeroes(Math.floor((timeRemaining / 60) % 60)),
                 hours = addZeroes(Math.floor(timeRemaining / 3600));
 
-            return {timeRemaining, hours, minutes, seconds};
+            return {
+                timeRemaining,
+                hours,
+                minutes,
+                seconds
+            };
         }
 
-        const updateClock = function() {
+        const updateClock = function () {
             let timer = getTimeRemaining();
             if (timer.timeRemaining > 0) {
                 timerHours.textContent = timer.hours;
@@ -50,7 +55,7 @@ window.addEventListener('DOMContentLoaded', function () {
         }
 
         updateClock();
-        
+
     };
 
     countTimer();
@@ -108,7 +113,7 @@ window.addEventListener('DOMContentLoaded', function () {
             popupContent = popup.querySelector('.popup-content');
 
         let showPopup = () => {
-            if (!popup.style.display || popup.style.display === 'none'){
+            if (!popup.style.display || popup.style.display === 'none') {
                 popup.style.display = 'block';
                 popupContent.style.top = '10%';
                 document.body.style.overflow = 'hidden';
@@ -129,7 +134,7 @@ window.addEventListener('DOMContentLoaded', function () {
                 popupContent.style.top = '10%';
                 document.body.style.overflow = '';
             }
-            
+
         }
 
         popupBtns.forEach((item) => {
@@ -230,7 +235,7 @@ window.addEventListener('DOMContentLoaded', function () {
             }
         }
 
-        const autoPlaySlider = () => { 
+        const autoPlaySlider = () => {
             prevSlide(slide, currentSlide, 'portfolio-item-active');
             prevSlide(dots, currentSlide, 'dot-active');
             currentSlide = isHasSlide(++currentSlide);
@@ -326,21 +331,21 @@ window.addEventListener('DOMContentLoaded', function () {
 
         const diff = ((+value - +elem.textContent) + '').split('');
         let sign;
-        
+
         if (diff[0] === '-') {
             sign = '-';
             diff.splice(0, 1);
         } else {
             sign = '+';
-        } 
+        }
 
 
         let res = elem.textContent.split('');
         diff.forEach(() => {
             if (res.length < diff.length) {
                 res.unshift('0');
-            } 
-            
+            }
+
         });
 
         console.log(diff, res);
@@ -350,22 +355,22 @@ window.addEventListener('DOMContentLoaded', function () {
         const aminationRec = () => {
             if (sign === '+') {
                 diff.forEach((item, i) => {
-                    
-                        if (item === '0' && count === 0) {
-                            res[i + res.length - diff.length] = (+res[i + res.length - diff.length] + 1) + '';
-                            diff[i] = '9';
-                        } else if (item !== '0') {
-                            const repChar = (+res[i + res.length - diff.length] + 1) + '';
-                            
-                            res[i + res.length - diff.length] = repChar === '10' ? '0' : repChar;
-                            diff[i] = (+diff[i] - 1) + '';;
-                        }
-                    
-                    
+
+                    if (item === '0' && count === 0) {
+                        res[i + res.length - diff.length] = (+res[i + res.length - diff.length] + 1) + '';
+                        diff[i] = '9';
+                    } else if (item !== '0') {
+                        const repChar = (+res[i + res.length - diff.length] + 1) + '';
+
+                        res[i + res.length - diff.length] = repChar === '10' ? '0' : repChar;
+                        diff[i] = (+diff[i] - 1) + '';;
+                    }
+
+
                 });
 
                 elem.textContent = res.join('');
-                
+
 
                 count++;
                 if (count === 10) {
@@ -432,8 +437,8 @@ window.addEventListener('DOMContentLoaded', function () {
 
             }
 
-            (calcDay.value && calcDay.value < 5) ? dayValue = 2 : (calcDay.value && calcDay.value < 10) ? dayValue = 1.5 : dayValue = 1;
-            
+            (calcDay.value && calcDay.value < 5) ? dayValue = 2: (calcDay.value && calcDay.value < 10) ? dayValue = 1.5 : dayValue = 1;
+
             if (typeValue && squareValue) {
                 total = price * typeValue * squareValue * countVAlue * dayValue;
             }
@@ -458,19 +463,48 @@ window.addEventListener('DOMContentLoaded', function () {
 
         const errorMessage = 'Что-то пошло не так...',
             loadMessage = 'Загрузка...',
-            successMessage = 'Спасибо! Мы скоро с вами свяжемся',
-            statusMessage = document.createElement('div');
-        
-        statusMessage.style.cssText = `font-size: 2rem;`
+            successMessage = 'Спасибо! Мы скоро с вами свяжемся';
 
-        const form = document.getElementById('form1');
-        form.append(statusMessage);
 
-        const formData = new FormData(form);
-        let body = {};
-        for (let value of formData.entries()) {
-            body[value[0]] = value[1];
-        }
+
+
+
+
+        const submitForm = (form) => {
+            form.addEventListener('submit', (event) => {
+                event.preventDefault();
+                const statusMessage = form.querySelector('.status-message');
+
+                const formData = new FormData(form);
+                let body = {};
+                for (let value of formData.entries()) {
+                    body[value[0]] = value[1];
+                }
+
+                postData(body, () => {
+                    statusMessage.textContent = loadMessage;
+                    setTimeout(() => {
+                        statusMessage.textContent = '';
+                    }, 3000);
+                }, () => {
+                    statusMessage.textContent = successMessage;
+                    setTimeout(() => {
+                        statusMessage.textContent = '';
+                    }, 3000);
+                }, (error) => {
+                    console.error(error);
+                    statusMessage.textContent = errorMessage;
+                    setTimeout(() => {
+                        statusMessage.textContent = '';
+                    }, 3000);
+                })
+
+                for (let value of formData.entries()) {
+                    form.querySelector(`input[name="${value[0]}"]`).value = '';
+                }
+
+            });
+        };
 
         const postData = (body, loadData, successData, errorData) => {
             const request = new XMLHttpRequest();
@@ -489,25 +523,69 @@ window.addEventListener('DOMContentLoaded', function () {
             request.open('POST', './send.php');
             request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
             request.send('data=' + JSON.stringify(body));
-        }
+        };
 
-        form.addEventListener('submit', (event) => {
-            event.preventDefault();
-            postData(body,() => {
-                statusMessage.textContent = loadMessage;
-            }, () => {
-                statusMessage.textContent = successMessage;
-            }, (error) => {
-                console.error(error);
-                statusMessage.textContent = errorMessage;
-            })
+        const forms = document.querySelectorAll('form');
 
+        forms.forEach((item) => {
+            const statusMessage = document.createElement('div');
+            statusMessage.style.cssText = `font-size: 2rem; color: #fff`;
+            statusMessage.classList.add('status-message');
+            item.append(statusMessage);
+            submitForm(item);
         });
-        
-
 
     };
 
     sendForm();
-    
+
+    //validation
+
+    const  maskPhone = (selector, masked = '+7 (___) ___-__-__') => {
+        const elem = document.querySelector(selector);
+
+        function mask(event) {
+            const keyCode = event.keyCode;
+            const template = masked,
+                def = template.replace(/\D/g, ""),
+                val = this.value.replace(/\D/g, "");
+            console.log(template);
+            let i = 0,
+                newValue = template.replace(/[_\d]/g, function (a) {
+                    return i < val.length ? val.charAt(i++) || def.charAt(i) : a;
+                });
+            i = newValue.indexOf("_");
+            if (i != -1) {
+                newValue = newValue.slice(0, i);
+            }
+            let reg = template.substr(0, this.value.length).replace(/_+/g,
+                function (a) {
+                    return "\\d{1," + a.length + "}";
+                }).replace(/[+()]/g, "\\$&");
+            reg = new RegExp("^" + reg + "$");
+            if (!reg.test(this.value) || this.value.length < 5 || keyCode > 47 && keyCode < 58) {
+                this.value = newValue;
+            }
+            if (event.type == "blur" && this.value.length < 5) {
+                this.value = "";
+            }
+
+        }
+
+        elem.addEventListener("input", mask);
+        elem.addEventListener("focus", mask);
+        elem.addEventListener("blur", mask);
+    }
+
+    const validation = () => {
+        maskPhone('.form-phone');
+        document.querySelectorAll('input[name="user_name"], input[name="user_message"]').forEach((item) => {
+            item.addEventListener('input', () => {
+                item.value = item.value.replace(/[^а-яё \,\.\!\?\:\@\;\-\%\/]/i, '')
+            });
+        });
+    };
+
+    validation();
+
 });
