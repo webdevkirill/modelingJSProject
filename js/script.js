@@ -466,10 +466,6 @@ window.addEventListener('DOMContentLoaded', function () {
             successMessage = 'Спасибо! Мы скоро с вами свяжемся';
 
 
-
-
-
-
         const submitForm = (form) => {
             form.addEventListener('submit', (event) => {
                 event.preventDefault();
@@ -481,48 +477,50 @@ window.addEventListener('DOMContentLoaded', function () {
                     body[value[0]] = value[1];
                 }
 
-                postData(body, () => {
-                    statusMessage.textContent = loadMessage;
+                const insertMessage = (message) => {
+                    statusMessage.textContent = message;
                     setTimeout(() => {
                         statusMessage.textContent = '';
-                    }, 3000);
-                }, () => {
-                    statusMessage.textContent = successMessage;
-                    setTimeout(() => {
-                        statusMessage.textContent = '';
-                    }, 3000);
-                }, (error) => {
-                    console.error(error);
-                    statusMessage.textContent = errorMessage;
-                    setTimeout(() => {
-                        statusMessage.textContent = '';
-                    }, 3000);
-                })
-
-                for (let value of formData.entries()) {
-                    form.querySelector(`input[name="${value[0]}"]`).value = '';
+                    }, 10000);
                 }
+
+                postData(body, () => statusMessage.textContent = loadMessage)
+                    .then(() => insertMessage(successMessage))
+                    .catch((error) => {
+                        insertMessage(errorMessage);
+                        console.error(error);
+                    })
+                    .finally(() => {
+                        for (let value of formData.entries()) {
+                            form.querySelector(`input[name="${value[0]}"]`).value = '';
+                        }
+                    });
+
+
 
             });
         };
 
-        const postData = (body, loadData, successData, errorData) => {
-            const request = new XMLHttpRequest();
+        const postData = (body, loadData) => {
+            return new Promise((resolve, reject) => {
+                const request = new XMLHttpRequest();
 
-            request.addEventListener('readystatechange', () => {
-                loadData();
-                if (request.readyState !== 4) {
-                    return;
-                } else if (request.status === 200) {
-                    successData();
-                } else {
-                    errorData(request.status);
-                }
+                request.addEventListener('readystatechange', () => {
+                    loadData();
+                    if (request.readyState !== 4) {
+                        return;
+                    } else if (request.status === 200) {
+                        resolve();
+                    } else {
+                        reject(request.status);
+                    }
+                });
+
+                request.open('POST', './send.php');
+                request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                request.send('data=' + JSON.stringify(body));
             });
 
-            request.open('POST', './send.php');
-            request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-            request.send('data=' + JSON.stringify(body));
         };
 
         const forms = document.querySelectorAll('form');
@@ -534,6 +532,10 @@ window.addEventListener('DOMContentLoaded', function () {
             item.append(statusMessage);
             submitForm(item);
         });
+
+
+
+
 
     };
 
