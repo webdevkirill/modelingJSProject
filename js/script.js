@@ -463,7 +463,8 @@ window.addEventListener('DOMContentLoaded', function () {
 
         const errorMessage = 'Что-то пошло не так...',
             loadMessage = 'Загрузка...',
-            successMessage = 'Спасибо! Мы скоро с вами свяжемся';
+            successMessage = 'Спасибо! Мы скоро с вами свяжемся',
+            url = './send.php';
 
 
         const submitForm = (form) => {
@@ -484,8 +485,15 @@ window.addEventListener('DOMContentLoaded', function () {
                     }, 10000);
                 }
 
-                postData(body, () => statusMessage.textContent = loadMessage)
-                    .then(() => insertMessage(successMessage))
+                statusMessage.textContent = loadMessage;
+
+                postData(url, body)
+                    .then((response) => {
+                        if (response.status !== 200) {
+                            throw response.statusText
+                        }
+                        insertMessage(successMessage)
+                    })
                     .catch((error) => {
                         insertMessage(errorMessage);
                         console.error(error);
@@ -501,24 +509,15 @@ window.addEventListener('DOMContentLoaded', function () {
             });
         };
 
-        const postData = (body, loadData) => {
-            return new Promise((resolve, reject) => {
-                const request = new XMLHttpRequest();
+        const postData = (url, body) => {
 
-                request.addEventListener('readystatechange', () => {
-                    loadData();
-                    if (request.readyState !== 4) {
-                        return;
-                    } else if (request.status === 200) {
-                        resolve();
-                    } else {
-                        reject(request.status);
-                    }
-                });
-
-                request.open('POST', './send.php');
-                request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-                request.send('data=' + JSON.stringify(body));
+            return fetch(url, {
+                method: 'POST',
+                mode: 'cors',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: 'data=' + JSON.stringify(body)
             });
 
         };
@@ -533,17 +532,13 @@ window.addEventListener('DOMContentLoaded', function () {
             submitForm(item);
         });
 
-
-
-
-
     };
 
     sendForm();
 
     //validation
 
-    const  maskPhone = (selector, masked = '+7 (___) ___-__-__') => {
+    const maskPhone = (selector, masked = '+7 (___) ___-__-__') => {
         const elem = document.querySelector(selector);
 
         function mask(event) {
